@@ -12,7 +12,8 @@ export class UserService {
 
     @InjectModel(User.name)
     private readonly userModel: Model<User>
-  ){}
+  ) { }
+  
   async create(createUserDto: CreateUserDto) {
     try {
       const user = await this.userModel.create( createUserDto)
@@ -36,7 +37,9 @@ export class UserService {
         console.error(error);
         throw error; // Puedes propagar el error o manejarlo según tu lógica de la aplicación
     }
+
   }
+  
 
   async findOne(term: string) {
     let user: User;
