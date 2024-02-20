@@ -12,7 +12,8 @@ export class UserService {
 
     @InjectModel(User.name)
     private readonly userModel: Model<User>
-  ){}
+  ) { }
+  
   async create(createUserDto: CreateUserDto) {
     try {
       const user = await this.userModel.create( createUserDto)
@@ -26,6 +27,7 @@ export class UserService {
 
     }
   }
+  
   findAll() {
     return `This action returns all user`;
   }
