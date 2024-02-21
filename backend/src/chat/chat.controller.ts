@@ -13,14 +13,22 @@ export class ChatController {
     return this.chatService.create(createChatDto);
   }
 
-  @Post('detalle/:id')
-  createDetalleChat(@Param('id') id: string) {
-    return this.chatService.createDetalles(id);
-  }
   
   @Get()
   findAll() {
     return this.chatService.findAll();
+  }
+  @Post('response')
+  async getChatResponse(@Body('ideaId') ideaId: string): Promise<any> {
+    try {
+      // Llama al servicio para obtener las respuestas
+      const responses = await this.chatService.getChatResponses(ideaId);
+
+      return responses;
+    } catch (error) {
+      console.error('Error al obtener respuestas del chat:', error);
+      return { error: 'Error al obtener respuestas del chat.' };
+    }
   }
 
   

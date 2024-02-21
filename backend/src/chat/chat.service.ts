@@ -7,13 +7,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from 'src/user/user.service';
 import { DetalleChat } from './entities/detalleChat.entity';
 import { CreateDetalleChatDto } from './dto/create-detalleChat.dto';
-import { BotService } from 'src/bot/bot.service';
-import { CreateBotDto } from 'src/bot/dto/create-bot.dto';
-import { ObjectId } from 'mongodb';
-
+import OpenAI from 'openai';
 @Injectable()
 export class ChatService {
 
+  private readonly openai: OpenAI;
   constructor(
 
     @InjectModel(Chat.name)
@@ -22,8 +20,12 @@ export class ChatService {
     private readonly detalleChatModule : Model<DetalleChat>,
 
     private readonly userService : UserService,
-    private readonly botService : BotService,
-  ){}
+  ){
+    this.openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      
+    })
+  }
   async create(createChatDto: CreateChatDto) {
     // Verifica si el usuario existe
     const user = await this.userService.findOne(createChatDto.idUser)
@@ -37,56 +39,40 @@ export class ChatService {
     });
     return createdIdea.save();
   }
-
-  
-  //Crear un type Chat osea  si el chat de obtener detalles y otro de generar
-  async createDetalles(idChat: string) {
+  async getChatResponses(ideaId: string): Promise<any[]> {
     try {
-      // Busca el chat por su ID
-      let chat = await this.findById(idChat);
-      
-      
-  
-      
-      // Verifica si ya existe una conversación para el chat
-      if (!await this.botService.exitUserForID(chat.idUser.toString())) {
-        // Si no existe, crea los datos para la conversación y crea una nueva conversación
-        const data: CreateBotDto = {
-          conversation: [
-            { role: "system", content: "El bot está configurado para proporcionar lista de ideas de videos a través de un texto o un hashtags que solo le de el title y siempre le da en español" },
-            { role: "system", content: "You are a helpful assistant designed to output JSON." },
-            { role: "user", content: "Tengo una idea para un nuevo video." },
-            { role: "assistant", content: `{"ideas_de_video" : ["idea1", "idea2", "idea3", "idea4"]}` }
-          ],
-          idUser: chat.idUser.toString()
-        };
-  
-        // Crea una nueva conversación
-        await this.botService.createConversation(data);
-      }
-  
-      // Busca la conversación por el ID del chat
-      let idConversation = await this.botService.findByUserId(chat.idUser.toString());
-  
-      // Crea los datos para el mensaje del bot
-      const botData: CreateBotDto = {
-        idUser: chat.idUser.toString(), //Le Dat el idChat
-        userMessage: "chat.titulo", // Utiliza el título del chat como mensaje del usuario
-      };
-  
-      // Genera la respuesta del bot y añádela a la conversación
-      const botResponse = await this.botService.generateResponseAndAddToConversation(idConversation, botData);
-      
-      
-      return JSON.parse(botResponse);
-    } catch (error) {
-      console.error("Error al crear detalles:", error);
-      throw error;
-    }
     
-  }
-  
+      const idea = await this.findById(ideaId);
 
+      if (!idea) {
+        throw new NotFoundException('Idea not found');
+      }
+
+      const message = idea.titulo;
+
+      const responses: any[] = [];
+
+      for (let i = 0; i < 6; i++) {
+        const completion = await this.openai.chat.completions.create({
+          messages: [{ role: "user", content : `Genera una sola idea sintetizadas basadas en el mensaje: "${message}"` }],
+          model: "gpt-4-0125-preview",
+          temperature: 0.7,
+          max_tokens: 100,
+        });
+
+        responses.push({
+          idea: completion.choices[0].message.content
+        });
+      }
+
+      return responses;
+    } catch (error) {
+      console.error('Error obteniendo respuestas del chat GPT-3:', error);
+      return [{ error: 'Lo siento, no pude generar respuestas en este momento.' }];
+    }
+  }
+
+  
   
   async findAll() {
     try {
