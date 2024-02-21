@@ -1,4 +1,4 @@
-import { IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class CreateChatDto {
 
@@ -7,7 +7,8 @@ export class CreateChatDto {
     titulo: string;
 
     @IsString()
-    fecha: string;
+    @IsOptional()
+    fecha?: Date;
 
     @IsString()
     idUser: string;

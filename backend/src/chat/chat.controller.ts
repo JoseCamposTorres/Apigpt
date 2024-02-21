@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
+import { CreateDetalleChatDto } from './dto/create-detalleChat.dto';
 
 @Controller('chat')
 export class ChatController {
@@ -12,14 +13,20 @@ export class ChatController {
     return this.chatService.create(createChatDto);
   }
 
+  @Post('detalle/:id')
+  createDetalleChat(@Param('id') id: string) {
+    return this.chatService.createDetalles(id);
+  }
+  
   @Get()
   findAll() {
     return this.chatService.findAll();
   }
 
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.chatService.findOne(+id);
+    return this.chatService.findById(id);
   }
 
   @Patch(':id')
@@ -31,4 +38,10 @@ export class ChatController {
   remove(@Param('id') id: string) {
     return this.chatService.remove(+id);
   }
+
+  /*
+  @Get(':userId')
+  async findByUserId(@Param('userId') userId: string) {
+    return this.chatService.findByUserId(userId);
+  }*/
 }

@@ -31,11 +31,14 @@ export class UserService {
     try {
         // Busca y retorna todos los usuarios en la base de datos
         const users = await this.userModel.find();
+        if(!users) throw new NotFoundException(`No hay usuarios en la base de datos`)
         return users;
     } catch (error) {
+        console.log(error);
         // Si se produce un error durante la búsqueda, maneja el error aquí
-        console.error(error);
-        throw error; // Puedes propagar el error o manejarlo según tu lógica de la aplicación
+        throw new InternalServerErrorException('Internal server error');
+        
+        
     }
 
   }

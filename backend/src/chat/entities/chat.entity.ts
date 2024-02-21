@@ -8,8 +8,8 @@ export class Chat extends Document {
     @Prop()
     titulo : string;
 
-    @Prop()
-    fecha : string;
+    @Prop({default : Date.now()})
+    fecha : Date;
 
     @Prop({ type: Types.ObjectId, ref: 'User' })
     idUser : User;
