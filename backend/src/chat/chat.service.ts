@@ -39,7 +39,7 @@ export class ChatService {
     });
     return createdIdea.save();
   }
-  async getChatResponses(ideaId: string): Promise<any[]> {
+  private async getChatResponses(ideaId: string): Promise<any[]> {
     try {
     
       const idea = await this.findById(ideaId);
@@ -71,7 +71,28 @@ export class ChatService {
       return [{ error: 'Lo siento, no pude generar respuestas en este momento.' }];
     }
   }
+  
+  async createDetalleChat(createDetalleChatDto: CreateDetalleChatDto) {
+    try {
+      const botResponse = await this.getChatResponses(createDetalleChatDto.idConsulta);
 
+      const detallesChat = [];
+
+      for (let i = 0; i < botResponse.length - 1; i++) {
+        const detalleChat = new this.detalleChatModule({
+          idConsulta: createDetalleChatDto.idConsulta,
+          detalle_chat: botResponse[i].idea
+        });
+        const savedDetalleChat = await detalleChat.save(); // Guardar el detalle del chat en la base de datos
+        detallesChat.push(savedDetalleChat);
+      }
+
+      return detallesChat;
+    } catch (error) {
+      console.error("Error al crear detalles de chat:", error);
+      throw error;
+    }
+  }
   
   
   async findAll() {

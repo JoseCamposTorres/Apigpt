@@ -19,16 +19,9 @@ export class ChatController {
     return this.chatService.findAll();
   }
   @Post('response')
-  async getChatResponse(@Body('ideaId') ideaId: string): Promise<any> {
-    try {
-      // Llama al servicio para obtener las respuestas
-      const responses = await this.chatService.getChatResponses(ideaId);
-
-      return responses;
-    } catch (error) {
-      console.error('Error al obtener respuestas del chat:', error);
-      return { error: 'Error al obtener respuestas del chat.' };
-    }
+  async getChatResponse(@Body() detalleChatBot : CreateDetalleChatDto): Promise<any> 
+  {
+   return this.chatService.createDetalleChat(detalleChatBot)
   }
 
   
