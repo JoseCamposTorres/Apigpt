@@ -12,19 +12,17 @@ export class ChatController {
   create(@Body() createChatDto: CreateChatDto) {
     return this.chatService.create(createChatDto);
   }
-
   
+  @Post('response')
+  async getChatResponse(@Body() detalleChatBot: CreateDetalleChatDto): Promise<any> {
+    return this.chatService.createDetalleChat(detalleChatBot)
+  }
+
   @Get()
   findAll() {
     return this.chatService.findAll();
   }
-  @Post('response')
-  async getChatResponse(@Body() detalleChatBot : CreateDetalleChatDto): Promise<any> 
-  {
-   return this.chatService.createDetalleChat(detalleChatBot)
-  }
 
-  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.chatService.findById(id);

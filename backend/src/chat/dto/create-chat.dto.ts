@@ -2,7 +2,6 @@ import { IsOptional, IsString } from "class-validator";
 
 export class CreateChatDto {
 
-
     @IsString()
     titulo: string;
 

@@ -13,12 +13,10 @@ export class ChatService {
 
   private readonly openai: OpenAI;
   constructor(
-
     @InjectModel(Chat.name)
     private readonly chatModule : Model<Chat>,
     @InjectModel(DetalleChat.name)
     private readonly detalleChatModule : Model<DetalleChat>,
-
     private readonly userService : UserService,
   ){
     this.openai = new OpenAI({
@@ -26,6 +24,12 @@ export class ChatService {
       
     })
   }
+
+  /**
+   * Método para crear un nuevo chat.
+   * @param createChatDto DTO con los datos para crear el chat.
+   * @returns El chat creado.
+  */
   async create(createChatDto: CreateChatDto) {
     // Verifica si el usuario existe
     const user = await this.userService.findOne(createChatDto.idUser)
@@ -35,10 +39,16 @@ export class ChatService {
 
     const createdIdea = new this.chatModule({
       ...createChatDto,
-      idUser: user._id, // Asigna el ID del usuario al campo createdBy
+      idUser: user._id,
     });
     return createdIdea.save();
   }
+
+  /**
+   * Método para obtener respuestas de chat basadas en una idea proporcionada.
+   * @param ideaId El ID de la idea para la cual se generarán respuestas de chat.
+   * @returns Un arreglo de respuestas de chat generadas.
+  */
   private async getChatResponses(ideaId: string): Promise<any[]> {
     try {
     
@@ -72,6 +82,11 @@ export class ChatService {
     }
   }
   
+  /**
+   * Método para crear detalles de chat a partir de las respuestas generadas.
+   * @param createDetalleChatDto DTO para crear detalles de chat.
+   * @returns Un arreglo de detalles de chat creados.
+  */
   async createDetalleChat(createDetalleChatDto: CreateDetalleChatDto) {
     try {
       const botResponse = await this.getChatResponses(createDetalleChatDto.idConsulta);
@@ -124,8 +139,6 @@ export class ChatService {
     return chat;
   }
 
-
-
   async findByUserId(userId: string) {
     try {
       // Dentro de tu función findByUserId
@@ -148,11 +161,6 @@ export class ChatService {
     }
   }
   
-  
-  
-  
-  
-
   update(id: number, updateChatDto: UpdateChatDto) {
     return `This action updates a #${id} chat`;
   }
