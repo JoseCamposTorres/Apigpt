@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
 import { CreateDetalleChatDto } from './dto/create-detalleChat.dto';
+import { CreateGeneralChatDto } from './dto/create-generarChat.dto';
 
 @Controller('chat')
 export class ChatController {
@@ -36,6 +37,11 @@ export class ChatController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.chatService.remove(+id);
+  }
+
+  @Post('generate-response')
+  async generateChatResponse(@Body() createGeneralChatDto: CreateGeneralChatDto): Promise<any> {
+    return this.chatService.generaChatGeneral(createGeneralChatDto);
   }
 
   /*

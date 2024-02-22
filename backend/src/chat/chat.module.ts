@@ -5,6 +5,7 @@ import { Chat, ChatSchema } from './entities/chat.entity';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from 'src/user/user.module';
 import { DetalleChat, DetalleChatSchema } from './entities/detalleChat.entity';
+import { GeneralChat, GeneralChatSchema } from './entities/generalChat.entity';
 
 @Module({
   controllers: [ChatController],
@@ -13,7 +14,9 @@ import { DetalleChat, DetalleChatSchema } from './entities/detalleChat.entity';
   imports : [
     MongooseModule.forFeature([
       { name: Chat.name, schema: ChatSchema },
-      { name: DetalleChat.name, schema : DetalleChatSchema}
+      { name: DetalleChat.name, schema : DetalleChatSchema},
+      {name : GeneralChat.name, schema : GeneralChatSchema}
+
     ]),
     UserModule,
     
