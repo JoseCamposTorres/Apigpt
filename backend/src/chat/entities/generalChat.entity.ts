@@ -16,10 +16,6 @@ export class GeneralChat extends Document {
     @Prop({required: true})
     keywords : string[];
 
-    /*
-    @Prop({required: true})
-    guion : string;*/
-
     @Prop({required: true})
     imagen : string[];
 

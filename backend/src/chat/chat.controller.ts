@@ -19,6 +19,11 @@ export class ChatController {
     return this.chatService.createDetalleChat(detalleChatBot)
   }
 
+  @Post('generate-response')
+  async generateChatResponse(@Body() createGeneralChatDto: CreateGeneralChatDto): Promise<any> {
+    return this.chatService.generaChatGeneral(createGeneralChatDto);
+  }
+
   @Get()
   findAll() {
     return this.chatService.findAll();
@@ -39,14 +44,4 @@ export class ChatController {
     return this.chatService.remove(+id);
   }
 
-  @Post('generate-response')
-  async generateChatResponse(@Body() createGeneralChatDto: CreateGeneralChatDto): Promise<any> {
-    return this.chatService.generaChatGeneral(createGeneralChatDto);
-  }
-
-  /*
-  @Get(':userId')
-  async findByUserId(@Param('userId') userId: string) {
-    return this.chatService.findByUserId(userId);
-  }*/
 }
