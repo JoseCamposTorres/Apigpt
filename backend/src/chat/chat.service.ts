@@ -249,7 +249,7 @@ export class ChatService {
           keywords : chatResponse.keywords,
           //guion : chatResponse.guion,
           imagen : chatResponse.imageURLs,
-          id : createGeneralChatDto.idDetalleChat
+          idDetalleChat : createGeneralChatDto.idDetalleChat
           
         });
         const savedDetalleChat = await detalleChat.save(); // Guardar el detalle del chat en la base de datos
